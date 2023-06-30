@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 django = "*"
+treblle = "*"
+python-decouple = "*"
 
 [dev-packages]
 
