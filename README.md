@@ -23,3 +23,5 @@ pipenv shell
 ```shell
 pipenv install
 ```
+- Create a copy of `.env.example` and rename to `.env` then fill in the values
+>- find the treblle keys on the treblle dashboard
