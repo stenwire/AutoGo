@@ -31,7 +31,7 @@ pipenv install
 ```shell
 python manage.py shell
 
->>> from auth.me import CustomUser
+>>> from authme import CustomUser
 
 >>> CustomUser.objects.create_user(email="youremail@example.com",username="johnDoe707", password="strongpassword", is_staff=True, is_superuser=True)
 ```
