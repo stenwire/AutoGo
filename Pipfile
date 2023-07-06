@@ -7,6 +7,15 @@ name = "pypi"
 django = "*"
 treblle = "*"
 python-decouple = "*"
+pyjwt = "*"
+black = "*"
+django-cors-headers = "==1.1.0"
+djangorestframework = "*"
+djoser = "*"
+pandas = "*"
+install = "*"
+djangorestframework-simplejwt = "*"
+isort = "*"
 
 [dev-packages]
 
