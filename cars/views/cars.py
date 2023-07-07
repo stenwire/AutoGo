@@ -17,6 +17,9 @@ from ..serializers.categories import CategorySerializer
 from ..serializers.features import FeaturesSerializer
 from ..serializers.reviews import ReviewsSerializer
 
+# Where miscellaneous functions are stored
+from ..utils.miscellaneous import create_datetime
+
 # class CarsView(generics.ListCreateAPIView):
 #     permission_classes = []
 #     queryset = Cars.objects.all()
@@ -31,7 +34,8 @@ from ..serializers.reviews import ReviewsSerializer
 
 class CarList(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
-    queryset = Cars.objects.filter(available=True)
+    # queryset = Cars.objects.filter(available=True)
+    queryset = Cars.objects.all()
     serializer_class = CarsSerializer
 
     @action(detail=True, methods=["get"])
@@ -91,5 +95,46 @@ class CarRentView(generics.GenericAPIView):
             serializer = CarsSerializer(car)
             message = "Car booked successfully. Proceed to the pickup location."
             return Response({"car": serializer.data, "message": message})
+        except Cars.DoesNotExist:
+            return Response({"error": "Car not found."}, status=404)
+
+
+class RentCustomPrice(generics.GenericAPIView):
+    """Generate the price of car depending on the duration chosen"""
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = CarsSerializer
+
+    def get(self, request, car_id):
+        try:
+            car = Cars.objects.get(pk=car_id)
+
+            if not request.query_params:
+                data = {
+                    "error": "pickup_time or dropoff_time must be specified"
+                }
+                return Response(data, status=400)
+
+            else :
+                print(request.query_params.get('pickup_time'))
+
+                pickup_time = create_datetime(request.query_params.get('pickup_time'))
+                dropoff_time = create_datetime(request.query_params.get('dropoff_time'))
+                if not (dropoff_time and pickup_time):
+                    data = {'error': 'specify query parameters "pickup_time=value&dropoff=value"'}
+                    return Response(data, status=400)
+
+                if pickup_time > dropoff_time:
+                    data = {'error': 'pickup_time cannot be greater than dropoff_time'}
+                    return Response(data, status=400)
+
+                difference = dropoff_time - pickup_time
+                if difference.days < 1 :
+                    data = {'error': 'dropoff_time must be one day ahead of pickup_time'}
+                    return Response(data, status=400)
+
+                data = { 'price': '{}'.format(car.price * difference.days) }
+                return Response(data, status=200)
+
+
         except Cars.DoesNotExist:
             return Response({"error": "Car not found."}, status=404)

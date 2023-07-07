@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views.brands import BrandView
-from .views.cars import CarDetail, CarList, CarRentView, RentedCarsView  # CarsView,
+from .views.cars import CarDetail, CarList, CarRentView, RentedCarsView, RentCustomPrice  # CarsView,
 from .views.categories import CategoryView
 from .views.features import FeaturesView
 from .views.reviews import ReviewDetail, ReviewList, ReviewsView
@@ -21,7 +21,7 @@ urlpatterns = [
     path("cars/<car_id>/rent/", CarRentView.as_view(), name="book-car"),
     path("rented-cars/", RentedCarsView.as_view(), name="booked-cars"),
     # -----------------------
-    # path('cars/<pk>/', CarDetail.as_view(), name='car-detail'),
+    path('cars/<pk>/', CarDetail.as_view(), name='car-detail'),
     # ------------------------
     path(
         "cars/<pk>/reviews/",
@@ -31,4 +31,9 @@ urlpatterns = [
     path("cars/<car_id>/reviews/<pk>/", ReviewDetail.as_view(), name="review-detail"),
     # -------------------------
     # path('cars/<pk>/features/', ReviewList.as_view(), name='review-list'),
+
+    # ---------------
+    # Route for calculating the price of a car depending on the duration
+    path("cars/<car_id>/rent/price", RentCustomPrice.as_view(), name='rent_price')
+
 ]
