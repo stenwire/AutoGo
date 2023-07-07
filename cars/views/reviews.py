@@ -1,9 +1,10 @@
-from authme.permissions import IsAdminUserOrReadOnly, ProtectAllMethods
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from authme.permissions import IsAdminUserOrReadOnly, ProtectAllMethods
 
 from ..models.brands import Brand
 from ..models.cars import Cars
@@ -24,14 +25,22 @@ class ReviewsView(generics.ListCreateAPIView):
     serializer_class = ReviewsSerializer
 
 
-class ReviewList(viewsets.ModelViewSet):
+class ReviewListCreate(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    queryset = Reviews.objects.all()
     serializer_class = ReviewsSerializer
 
+    def get_queryset(self):
+        car_id = self.kwargs.get("car_id")
+        try:
+            car = Cars.objects.get(id=car_id)
+            return Reviews.objects.filter(car=car)
+        except Cars.DoesNotExist:
+            return Reviews.objects.none()
+
     def perform_create(self, serializer):
-        # serializer.save(user=self.request.user)
-        serializer.save()
+        car_id = self.kwargs["car_id"]
+        car = get_object_or_404(Cars, pk=car_id)
+        serializer.save(user=self.request.user, car=car)
 
 
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):

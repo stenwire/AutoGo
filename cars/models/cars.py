@@ -3,6 +3,7 @@ import uuid
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls.base import reverse
+
 from utils.models import TrackObjectStateMixin
 
 User = get_user_model()
@@ -20,14 +21,10 @@ class Cars(TrackObjectStateMixin):
     features = models.ManyToManyField("Features")
     pickup_time = models.DateTimeField()
     dropoff_time = models.DateTimeField()
-    pickup_location = models.CharField(
-        max_length=255, unique=True, verbose_name="Pickup Location"
-    )
-    dropoff_location = models.CharField(
-        max_length=255, unique=True, verbose_name="Dropoff Location"
-    )
-    available = models.BooleanField(default=True)
-    booked_by = models.UUIDField(default=uuid.uuid4, unique=True, blank=True)
+    pickup_location = models.CharField(max_length=255, verbose_name="Pickup Location")
+    dropoff_location = models.CharField(max_length=255, verbose_name="Dropoff Location")
+    available = models.BooleanField(default=True, blank=True, null=True)
+    booked_by = models.UUIDField(blank=True, null=True)
 
     OWNER_FIELD = "user"
 

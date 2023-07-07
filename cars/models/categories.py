@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls.base import reverse
+
 from utils.models import TrackObjectStateMixin
 
 

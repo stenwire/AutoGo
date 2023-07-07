@@ -16,6 +16,7 @@ pandas = "*"
 install = "*"
 djangorestframework-simplejwt = "*"
 isort = "*"
+django-filter = "*"
 
 [dev-packages]
 

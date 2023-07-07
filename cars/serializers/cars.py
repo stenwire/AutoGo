@@ -41,6 +41,7 @@ class CarsSerializer(serializers.ModelSerializer):
             "available",
             "reviews",
             "available",
+            "booked_by",
         ]
         read_only_fields = ("id",)
         # extra_kwargs = {"reviews": {"required": False, "allow_null": True}}
